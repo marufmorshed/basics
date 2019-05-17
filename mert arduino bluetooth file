@@ -1,0 +1,119 @@
+//define the control pins of the motors
+//motor A
+int enableA = 10;
+int IN1 = 9;
+int IN2 = 8;
+
+//motor B
+int enableB = 5;
+int IN3 = 7;
+int IN4 = 6;
+
+#define maximumSpeed 250
+
+String readString;
+
+void setup() {
+  //set all the motor control pins to output
+
+  pinMode (enableA, OUTPUT);
+  pinMode (enableB, OUTPUT);
+  pinMode (IN1, OUTPUT);
+  pinMode (IN2, OUTPUT);
+  pinMode (IN3, OUTPUT);
+  pinMode (IN4, OUTPUT);
+
+  Serial.begin(9600);
+}
+
+void loop() {
+  while(Serial.available()){
+    delay(50);
+    char c = Serial.read();
+    readString+=c;
+  }
+
+  if(readString.length() > 0) {
+    Serial.println(readString);
+
+    if(readString == "FORWARD"){
+      moveForward();
+    }
+    
+    if(readString == "BACK"){
+      moveBack();
+    }
+
+    if(readString == "LEFT"){
+      turnLeft();
+    }
+
+    if(readString == "RIGHT"){
+      turnRight();
+    }
+
+    if(readString == "STOP"){
+      stopMotors();
+    }
+
+    readString = "";
+  }
+}
+
+void moveForward(){
+  digitalWrite(IN1, HIGH);
+  digitalWrite(IN2, LOW);
+  digitalWrite(IN3, HIGH);
+  digitalWrite(IN4, LOW);
+  
+  // accelerate from zero to maximum speed
+  for(int motorSpeed = 0; motorSpeed < maximumSpeed; motorSpeed++){
+    analogWrite(enableA, motorSpeed);
+    analogWrite(enableB, motorSpeed);
+    }
+}
+
+void moveBack(){
+  digitalWrite(IN1, LOW);
+  digitalWrite(IN2, HIGH);
+  digitalWrite(IN3, LOW);
+  digitalWrite(IN4, HIGH);
+
+  for(int motorSpeed = 0; motorSpeed < maximumSpeed; motorSpeed++){
+    analogWrite(enableA, motorSpeed);
+    analogWrite(enableB, motorSpeed);
+    }
+}
+
+void turnLeft(){
+  digitalWrite(IN1, HIGH);
+  digitalWrite(IN2, LOW);
+  digitalWrite(IN3, LOW);
+  digitalWrite(IN4, HIGH);
+
+  for(int motorSpeed = 0; motorSpeed < maximumSpeed; motorSpeed++){
+    analogWrite(enableA, motorSpeed);
+    analogWrite(enableB, motorSpeed);
+  }
+}
+
+void turnRight(){
+  digitalWrite(IN1, LOW);
+  digitalWrite(IN2, HIGH);
+  digitalWrite(IN3, HIGH);
+  digitalWrite(IN4, LOW);
+
+  for(int motorSpeed = 0; motorSpeed < maximumSpeed; motorSpeed++){
+    analogWrite(enableA, motorSpeed);
+    analogWrite(enableB, motorSpeed);
+  }
+}
+
+void stopMotors(){
+  digitalWrite(IN1, LOW);
+  digitalWrite(IN2, LOW);
+  digitalWrite(IN3, LOW);
+  digitalWrite(IN4, LOW);
+}
+
+
